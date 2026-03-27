@@ -24,8 +24,12 @@ json_api_format = {
     'message': '%(message)s'
 }
 
-json_formatter = logging.Formatter(fmt=json_file_format.__str__())
-json_formatter_api = logging.Formatter(fmt=json_api_format.__str__())
+json_formatter = logging.Formatter(
+    fmt='{"loggername": "%(name)s", "levelname": "%(levelname)s", "datetime": "%(asctime)s", "message": "%(message)s"}'
+)
+json_formatter_api = logging.Formatter(
+    fmt='{"datetime": "%(asctime)s", "message": "%(message)s"}'
+)
 
 
 # configuration

@@ -42,7 +42,8 @@ class Child(BaseModel):
     parent_id: db.Mapped[UUID] = db.mapped_column(db.ForeignKey('single_parent.id'), nullable=True)
 
     parent: db.Mapped['SingleParent'] = db.relationship(
-        primaryjoin="and_(SingleParent.id == Child.parent_id, SingleParent.active)")
+        primaryjoin="and_(SingleParent.id == Child.parent_id, SingleParent.active)",
+        overlaps="children")
     classes: db.Mapped[List['SchoolClass']] = db.relationship(
         secondary=child_class,
         primaryjoin='and_(Child.id == child_class.c.child_id, Child.active)',

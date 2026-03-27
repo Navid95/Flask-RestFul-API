@@ -1,8 +1,12 @@
+import logging
 from uuid import UUID
 
 from flask.views import MethodView
 from flask import request
 from app.blueprints.service import BaseService
+from environ import APP_LOGGER_NAME
+
+logger = logging.getLogger(APP_LOGGER_NAME)
 
 
 class BaseAPI(MethodView):
@@ -106,8 +110,8 @@ class BaseRestAPI(BaseAPI):
         try:
             page = int(request.args.get('page', 1))
             limit = int(request.args.get('limit', 10))
-        except BaseException as err:
-            print(err)
+        except Exception as err:
+            logger.error(err)
             page = 1
             limit = 10
         return self.__service__.get_all_models(limit=limit, page=page)
@@ -175,7 +179,7 @@ class BaseRestAPIRelationshipByModelIdBySubResourceId(BaseAPI):
     state of the object should be shared across requests, By-default it is False.
     """
     init_every_request = False
-    __view_name_suffix__ = 'ByModeIdBySubResourceId'
+    __view_name_suffix__ = 'ByModelIdBySubResourceId'
 
     def __init__(self, sub_resource_key: str, service: BaseService):
         """

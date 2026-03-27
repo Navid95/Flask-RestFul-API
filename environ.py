@@ -1,4 +1,9 @@
-SQLALCHEMY_DATABASE_URI = 'sqlite:///develop.db'
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///develop.db')
 
 # LOGGING
 APP_LOGGER_NAME = 'app_logger'

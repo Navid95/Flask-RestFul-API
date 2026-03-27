@@ -55,7 +55,10 @@ class BaseService:
         :param model_id: model UUID
         :return: {'result': bool}
         """
-        return {'result': self.__model__.delete(model_id)}
+        result = self.__model__.delete(model_id)
+        if not result:
+            return jsonify({'result': False}), 404
+        return jsonify({'result': True})
 
     def create_model(self, request_data: dict = None):
         load_schema = self.__model_schema__(exclude=('id', 'created', 'updated', 'active'))
@@ -120,7 +123,7 @@ class BaseService:
             if sub_resource:
                 setattr(model, sub_model_key, sub_resource)
 
-        put_result = self.__model__.put(model)
+        self.__model__.put(model)
         return dump_schema.dump(getattr(model, sub_model_key), many=many)
 
     def get_sub_model_by_id(self, model_id: UUID, sub_model_id: UUID, sub_model_key: str):
@@ -145,7 +148,7 @@ class BaseService:
                     return dump_schema.dump(sub_resource_list)
         return jsonify({
             'message': 'Not found'
-        }), 400
+        }), 404
 
     def delete_sub_model_by_id(self, model_id: UUID, sub_model_id: UUID, sub_model_key: str):
         many = self.__relation_many__.get(sub_model_key, False)

@@ -4,5 +4,5 @@ if __name__ == '__main__':
     app = create_app(__name__)
     with app.app_context():
         db.create_all()
-    app.run()
+    app.run(host='0.0.0.0')
 

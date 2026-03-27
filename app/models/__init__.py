@@ -1,4 +1,5 @@
 import copy
+import logging
 from datetime import datetime
 from uuid import UUID
 from uuid import uuid4
@@ -13,6 +14,9 @@ from sqlalchemy import inspect
 
 from app.extensions import db
 from app.extensions import ma
+from environ import APP_LOGGER_NAME
+
+logger = logging.getLogger(APP_LOGGER_NAME)
 
 
 class BaseModel(db.Model):
@@ -55,7 +59,6 @@ class BaseModel(db.Model):
         default=datetime.now,
         nullable=False
     )
-    # NODO change datetimes to UTC format
     updated: db.Mapped[datetime] = db.mapped_column(
         db.DateTime,
         default=datetime.now,
@@ -87,8 +90,6 @@ class BaseModel(db.Model):
 
         return object_dict
 
-    # NODO 1000: implement __eq__()
-
     @classmethod
     def post(cls, model_object) -> Optional[object]:
         """
@@ -106,8 +107,8 @@ class BaseModel(db.Model):
         try:
             db.session.add(model_object)
             db.session.commit()
-        except BaseException as e:
-            print(e)
+        except Exception as e:
+            logger.error(e)
             db.session.rollback()
             return None
         return model_object
@@ -142,15 +143,15 @@ class BaseModel(db.Model):
             if key not in cls.__patch_ignore_set__:
                 try:
                     setattr(model_object, key, value)
-                except BaseException as e:
-                    print(e)
+                except Exception as e:
+                    logger.error(e)
                     return None
         try:
             db.session.add(model_object)
             db.session.commit()
             return model_object
-        except BaseException as e:
-            print(e)
+        except Exception as e:
+            logger.error(e)
             db.session.rollback()
             return None
 
@@ -176,8 +177,8 @@ class BaseModel(db.Model):
                     setattr(server_object, column.key, value)
             db.session.add(server_object)
             db.session.commit()
-        except BaseException as e:
-            print(e)
+        except Exception as e:
+            logger.error(e)
             db.session.rollback()
             return None
         return server_object
@@ -201,8 +202,8 @@ class BaseModel(db.Model):
             db.session.add(model_object)
             db.session.commit()
             return True
-        except BaseException as e:
-            print(e)
+        except Exception as e:
+            logger.error(e)
             db.session.rollback()
             return False
 
