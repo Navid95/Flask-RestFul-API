@@ -1,10 +1,13 @@
 import logging
+import os
 from logging import FileHandler
 from environ import APP_LOGGER_NAME
 from environ import API_LOGGER_NAME
 from environ import APP_LOGGER_FILE_PATH
 from environ import API_LOGGER_FILE_PATH
 from environ import EXCEPTION_LOGGER_FILE_PATH
+
+os.makedirs('./log', exist_ok=True)
 
 # Handlers
 app_log_file_handler = FileHandler(filename=APP_LOGGER_FILE_PATH, mode='a+')
