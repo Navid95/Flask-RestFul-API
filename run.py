@@ -1,4 +1,4 @@
-from app import create_app, db
+from flask_restful_core import create_app, db
 
 if __name__ == '__main__':
     app = create_app(__name__)

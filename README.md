@@ -28,7 +28,7 @@ Every registered model automatically has:
 | Pagination | `?page=1&limit=10` on every collection endpoint |
 | Envelope wrapping | Consistent `{ "order": {...} }` / `{ "orders": [...] }` responses |
 | Relationship endpoints | Full sub-resource CRUD for declared relationships |
-| Request logging | Every request/response logged to the database |
+| Request logging | Every request/response logged as structured JSON, to stdout by default |
 
 ## Auto-Generated Endpoints
 
@@ -73,8 +73,8 @@ All other endpoints (`get`, `update`, `get_all`, relationship endpoints) continu
 ## Defining a Model
 
 ```python
-from app.models import BaseModel, BaseSchema
-from app.extensions import db
+from flask_restful_core.models import BaseModel, BaseSchema
+from flask_restful_core.extensions import db
 
 class Parent(BaseModel):
     name: db.Mapped[str] = db.mapped_column(nullable=False)
@@ -97,6 +97,40 @@ class ParentSchema(BaseSchema):
 - Flask 2.3
 - SQLAlchemy 2.0
 - Marshmallow 3.20
+
+## Installing as a Dependency
+
+The package (`flask_restful_core`) is pip-installable directly from this repo, so another project can depend
+on it as a library instead of copying the code:
+
+```bash
+pip install git+https://github.com/Navid95/Flask-RestFul-API.git
+```
+
+Then, from anywhere in the consuming project:
+
+```python
+from flask_restful_core import create_app, register_api
+from flask_restful_core.models import BaseModel, BaseSchema
+from flask_restful_core.blueprints.service import BaseService
+```
+
+No special config file is required — `create_app()` reads its settings from environment variables (see
+below) or a custom config class passed in as the second argument.
+
+## Logging
+
+Every request/response is logged as a single JSON line via two loggers, `app_logger` and `api_logger`.
+Destination is controlled with environment variables (see `.env.example`):
+
+| Variable | Default | Values |
+|---|---|---|
+| `LOG_DESTINATION` | `stdout` | `stdout`, `file`, `both` |
+| `LOG_DIR` | `./log` | directory for file handlers (only used when `LOG_DESTINATION` includes `file`) |
+| `LOG_LEVEL` | `DEBUG` | any standard `logging` level name |
+
+`stdout` (the default) is the Docker/container-friendly mode — JSON lines on stdout are picked up by any log
+driver or shipping agent (Fluentd, Promtail, Datadog agent, CloudWatch, …) with no volume mounts required.
 
 ## Quick Start
 
@@ -131,19 +165,20 @@ python -m pytest test/ -v
 
 ```
 source/
-├── app/
-│   ├── __init__.py         # App factory, register_api()
+├── pyproject.toml           # Packaging — pip install git+... installs flask_restful_core
+├── flask_restful_core/
+│   ├── __init__.py          # App factory, register_api()
+│   ├── config.py            # Development/Test/Production config, env-var-driven
 │   ├── blueprints/
-│   │   ├── api/            # MethodView classes — HTTP layer, never touch these
-│   │   └── service/        # BaseService — override here for custom business logic
+│   │   ├── api/              # MethodView classes — HTTP layer, never touch these
+│   │   └── service/          # BaseService — override here for custom business logic
 │   ├── models/
-│   │   ├── __init__.py     # BaseModel (CRUD), BaseSchema (serialization)
-│   │   └── log/            # Request/response logging model
+│   │   └── __init__.py       # BaseModel (CRUD), BaseSchema (serialization)
 │   └── utilities/
-│       ├── exceptions/     # Error handlers
-│       └── logging/        # Logging configuration
+│       ├── exceptions/       # Error handlers
+│       └── logging/          # Structured JSON logging, configurable destination
 └── test/
-    ├── models/example.py   # Example: SingleParent → Child (one-to-many), Child ↔ SchoolClass (many-to-many)
+    ├── models/example.py    # Example: SingleParent → Child (one-to-many), Child ↔ SchoolClass (many-to-many)
     ├── test_base_model.py
     ├── test_base_rest_api.py
     └── test_marshmallow_schema.py

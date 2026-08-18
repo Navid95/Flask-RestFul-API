@@ -12,9 +12,9 @@ from marshmallow import ValidationError
 from sqlalchemy import select
 from sqlalchemy import inspect
 
-from app.extensions import db
-from app.extensions import ma
-from environ import APP_LOGGER_NAME
+from flask_restful_core.extensions import db
+from flask_restful_core.extensions import ma
+from flask_restful_core.utilities.logging import APP_LOGGER_NAME
 
 logger = logging.getLogger(APP_LOGGER_NAME)
 

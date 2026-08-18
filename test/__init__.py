@@ -1,15 +1,15 @@
 import pytest
 
-from app import Test
-from app import create_app
-from app.extensions import db
-from app.extensions import ma
+from flask_restful_core import Test
+from flask_restful_core import create_app
+from flask_restful_core.extensions import db
+from flask_restful_core.extensions import ma
 from test.models.example import SingleParent
 from test.models.example import SingleParentSchema
 from test.models.example import Child
 from test.models.example import ChildSchema
-from app.blueprints.service import BaseService
-from app import register_api
+from flask_restful_core.blueprints.service import BaseService
+from flask_restful_core import register_api
 
 
 @pytest.fixture()

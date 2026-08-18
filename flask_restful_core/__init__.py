@@ -4,23 +4,24 @@ from typing import Type
 
 from flask import Flask
 
-from app.utilities.logging import configuration
-from app.utilities.logging.api_log import log_api_call, get_request_time
-from app.utilities.exceptions import register_handlers
-from app import blueprints
-from app.config import Development, Test, Production
-from app.models import BaseSchema
-from app.models import BaseModel
-from app.models.log import IncomingAPI
-from app.blueprints.api import BaseAPI
-from app.blueprints.api import BaseRestAPI
-from app.blueprints.api import BaseRestAPIById
-from app.blueprints.api import BaseRestAPIRelationshipByModelId
-from app.blueprints.api import BaseRestAPIRelationshipByModelIdBySubResourceId
-from app.blueprints.service import BaseService
-from app.extensions import db
-from app.extensions import ma
-from environ import APP_LOGGER_NAME
+from flask_restful_core.utilities.logging.configuration import configure_logging
+from flask_restful_core.utilities.logging.api_log import log_api_call, get_request_time
+from flask_restful_core.utilities.exceptions import register_handlers
+from flask_restful_core import blueprints
+from flask_restful_core.config import Development, Test, Production
+from flask_restful_core.models import BaseSchema
+from flask_restful_core.models import BaseModel
+from flask_restful_core.blueprints.api import BaseAPI
+from flask_restful_core.blueprints.api import BaseRestAPI
+from flask_restful_core.blueprints.api import BaseRestAPIById
+from flask_restful_core.blueprints.api import BaseRestAPIRelationshipByModelId
+from flask_restful_core.blueprints.api import BaseRestAPIRelationshipByModelIdBySubResourceId
+from flask_restful_core.blueprints.service import BaseService
+from flask_restful_core.extensions import db
+from flask_restful_core.extensions import ma
+from flask_restful_core.utilities.logging import APP_LOGGER_NAME
+
+__version__ = '0.2.0'
 
 ENV = os.environ.get('FLASK_ENV', 'DEVELOP')
 configurations = [Development, Test, Production]
@@ -28,10 +29,10 @@ logger = logging.getLogger(APP_LOGGER_NAME)
 
 
 def create_app(name, config=Development):
-    logger.info('initializing the flask app ...')
     app = Flask(import_name=name)
     app.config.from_object(config)
-    app.config.from_pyfile('environ.py')
+    configure_logging(app)
+    logger.info('initializing the flask app ...')
     app = register_extensions(app)
     app = register_blueprints(app)
     app = register_apis(app)

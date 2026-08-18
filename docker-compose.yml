@@ -7,3 +7,12 @@ services:
       - .:/app
     env_file:
       - .env
+    # Logs go to stdout by default (LOG_DESTINATION=stdout), so `docker compose logs web` shows JSON log
+    # lines that any log-shipping agent (Fluentd, Promtail, Datadog agent, CloudWatch, ...) can tail with
+    # no extra setup. To also (or instead) write logs to a file, uncomment below:
+    # environment:
+    #   - LOG_DESTINATION=both
+    #   - LOG_DIR=/app/log
+    # volumes:
+    #   - .:/app
+    #   - ./log:/app/log

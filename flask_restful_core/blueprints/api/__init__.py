@@ -3,8 +3,8 @@ from uuid import UUID
 
 from flask.views import MethodView
 from flask import request
-from app.blueprints.service import BaseService
-from environ import APP_LOGGER_NAME
+from flask_restful_core.blueprints.service import BaseService
+from flask_restful_core.utilities.logging import APP_LOGGER_NAME
 
 logger = logging.getLogger(APP_LOGGER_NAME)
 

@@ -3,8 +3,8 @@ from typing import Type
 
 from flask import jsonify
 from marshmallow import ValidationError
-from app.models import BaseModel
-from app.models import BaseSchema
+from flask_restful_core.models import BaseModel
+from flask_restful_core.models import BaseSchema
 
 
 class BaseService:

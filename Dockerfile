@@ -7,8 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN mkdir -p log
-
 EXPOSE 5000
 
 CMD ["python", "run.py"]

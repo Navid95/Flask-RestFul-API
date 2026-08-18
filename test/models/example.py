@@ -13,10 +13,10 @@ from typing import List
 
 from sqlalchemy import Table
 
-from app.models import BaseModel
-from app.models import BaseSchema
-from app.extensions import db
-from app.extensions import ma
+from flask_restful_core.models import BaseModel
+from flask_restful_core.models import BaseSchema
+from flask_restful_core.extensions import db
+from flask_restful_core.extensions import ma
 
 
 """
